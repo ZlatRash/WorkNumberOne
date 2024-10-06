@@ -1,0 +1,99 @@
+﻿@model List<User>
+
+<div class="text-center">
+    <h1 class="display-4" style="color: #ffffff">Менеджер пользователей</h1>
+    <h2 style="color: #ffffff">Форма для добавления пользователя</h2>
+    <form asp-action="Add" asp-controller="User" method="post">
+        <div class="form-group">
+            <p>
+                <label style="color: #ffffff">Имя</label><br/>
+                <input autocomplete="off" class="form-control" type="text" name="name"/>
+            </p>
+            <p>
+                <label style="color: #ffffff">Фамилия</label><br/>
+                <input autocomplete="off" class="form-control" type="text" name="surname"/>
+            </p>
+            <p>
+                <label style="color: #ffffff">Возраст</label><br/>
+                <input autocomplete="off" class="form-control" type="number" name="age"/>
+            </p>
+            <p>
+                <label style="color: #ffffff" id="gender">Пол</label>
+                <select class="custom-select" name="gender">
+                    <option value="MALE">Мужской</option>
+                    <option value="FEMALE">Женский</option>
+                </select>
+            </p>
+            <p>
+                <label style="color: #ffffff">Состоит в браке</label>
+                <input type="checkbox" name="married" value="true"/><br/>
+            </p>
+            <p>
+                <input type="submit" value="Отправить"/>
+            </p>
+        </div>
+
+    </form>
+</div>
+<table class="table table-hover table-dark">
+    <thead>
+    <tr>
+        <th>#</th>
+        <td>Имя</td>
+        <td>Фамилия</td>
+        <td>Пол</td>
+        <td>Возраст</td>
+        <td>Семейное положение</td>
+        <td></td>
+    </tr>
+
+    </thead>
+    <tbody class="overflow-y-scroll bg-dark">
+    @foreach (var person in Model)
+    {
+        <tr>
+            <th scope="row">@person.Id</th>
+            <td>@person.Name</td>
+            <td>@person.Surname</td>
+            @if (person.Gender == GenderType.MALE)
+            {
+                <td>Мужской</td>
+            }
+            @if (person.Gender == GenderType.FEMALE)
+            {
+                <td>Женский</td>
+            }
+            <td>@person.Age</td>
+            @if (@person.Married)
+            {
+                @if (person.Gender == GenderType.MALE)
+                {
+                    <td>Женат</td>
+                }
+                @if (person.Gender == GenderType.FEMALE)
+                {
+                    <td>Замужем</td>
+                }
+            }
+            @if (!@person.Married)
+            {
+                @if (person.Gender == GenderType.MALE)
+                {
+                    <td>Холост</td>
+                }
+                @if (person.Gender == GenderType.FEMALE)
+                {
+                    <td>Не замужем</td>
+                }
+            }
+            <td>
+                <form asp-action="Delete" asp-controller="User" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@person.Id"/>
+                    <input type="submit" value="Удалить" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?');"/>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<h2 style="color: #ffffff">Количество записей: @Model.Count</h2>
